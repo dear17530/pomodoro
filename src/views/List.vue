@@ -1,8 +1,8 @@
 <template lang="pug">
 #list
-  b-container
+  b-container.p-4
     b-row.mb-3
-      b-col(cols='1').ml-auto.count
+      b-col(cols='2').ml-auto.count.p-0.text-right
         span TODAY
         span MISSION
         span {{ toDoLength }}
