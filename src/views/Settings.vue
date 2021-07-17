@@ -1,11 +1,22 @@
 <template lang="pug">
 #settings
   b-container
-    b-table(:items='items' :fields='fields' @row-clicked='select')
-      template(#cell(src)='data')
-        audio(controls :src='require("../assets/"+data.value)')
-      template(#cell(select)='data')
-        font-awesome-icon(:icon='["fas", "check"]' v-if='sound === data.item.src')
+    b-row
+      b-col(cols='4')
+        div.txt WORK
+      b-col(cols='12')
+        b-table(:items='workItems' :fields='workfields' @row-clicked='workselect' thead-class='d-none')
+          template(#cell(select)='data')
+            font-awesome-icon(:icon='["far", "dot-circle"]' v-if='worksound === data.item.src').iconPink
+            font-awesome-icon(:icon='["far", "circle"]' v-else).iconGray
+    b-row
+      b-col(cols='4')
+        div.txt BREAK
+      b-col(cols='12')
+        b-table(:items='breakItems' :fields='breakfields' @row-clicked='breakselect' thead-class='d-none')
+          template(#cell(select)='data')
+            font-awesome-icon(:icon='["far", "dot-circle"]' v-if='breaksound === data.item.src').iconPink
+            font-awesome-icon(:icon='["far", "circle"]' v-else).iconGray
 </template>
 
 <script>
@@ -13,25 +24,44 @@ export default {
   name: 'Settings',
   data () {
     return {
-      items: [
-        { name: '鈴聲', src: 'alarm.mp3' },
-        { name: 'Yay', src: 'yay.mp3' }
+      workItems: [
+        { name: 'ALARM', src: 'alarm.mp3' },
+        { name: 'YAY', src: 'yay.mp3' },
+        { name: 'NONE', src: 'none' },
+        { name: 'BIRD', src: 'BIRD.mp3' },
+        { name: 'RING', src: 'RING.mp3' }
       ],
-      fields: [
-        { key: 'name', label: '名稱' },
-        { key: 'src', label: '試聽' },
-        { key: 'select', label: '選擇' }
+      breakItems: [
+        { name: 'ALARM', src: 'alarm.mp3' },
+        { name: 'YAY', src: 'yay.mp3' },
+        { name: 'NONE', src: 'none' },
+        { name: 'BIRD', src: 'BIRD.mp3' },
+        { name: 'RING', src: 'RING.mp3' }
+      ],
+      workfields: [
+        { key: 'select', label: '選擇' },
+        { key: 'name', label: '名稱' }
+      ],
+      breakfields: [
+        { key: 'select', label: '選擇' },
+        { key: 'name', label: '名稱' }
       ]
     }
   },
   computed: {
-    sound () {
-      return this.$store.state.sound
+    worksound () {
+      return this.$store.state.worksound
+    },
+    breaksound () {
+      return this.$store.state.breaksound
     }
   },
   methods: {
-    select (item) {
-      this.$store.commit('selectSound', item.src)
+    workselect (item) {
+      this.$store.commit('selectworksound', item.src)
+    },
+    breakselect (item) {
+      this.$store.commit('selectbreaksound', item.src)
     }
   }
 }

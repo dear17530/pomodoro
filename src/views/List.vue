@@ -1,14 +1,23 @@
 <template lang="pug">
 #list
   b-container
-    b-row
+    b-row.mb-3
+      b-col(cols='1').ml-auto.count
+        span TODAY
+        span MISSION
+        span {{ toDoLength }}
+          span  / {{ doneLength }}
+    b-row.mb-3
       b-col(cols='12')
-        b-form-group(label='新增事項' invalid-feedback='請至少輸入兩個字' :state='state')
-          b-form-input(v-model='newitem' :state='state' trim @keydown.enter='additem')
-        b-btn(variant='primary' @click='additem') 新增
-        hr
-        h1 待辦
-        b-table(:items='list' :fields='listfields')
+        b-form-group(invalid-feedback='請至少輸入兩個字' :state='state')
+      b-col(cols='6').d-flex.borderPink
+        b-form-input(v-model='newitem' placeholder='add a new mission' :state='state' trim @keydown.enter='additem').border-0.bg-none
+        b-btn(variant='bg-variant' @click='additem').pr-0
+          b-icon.colorPink(icon='plus-circle')
+    b-row
+      b-col(cols='6').p-1
+        h3.list TO DO
+        b-table(:items='list' :fields='listfields' thead-class='d-none' small).list
           template(#cell(name)='data')
             b-form-input(
               v-if='data.item.edit'
@@ -20,28 +29,24 @@
             )
             span(v-else) {{ data.value }}
           template(#cell(action)='data')
-            span(v-if='!data.item.edit')
-              b-btn(@click='editlist(data.index)' variant='success')
-                font-awesome-icon(:icon='["fas", "pen"]')
-              b-btn(@click='dellist(data.index)' variant='danger')
-                font-awesome-icon(:icon='["fas", "trash"]')
-            span(v-else)
-              b-btn(@click='changelist(data.index)' variant='success')
-                font-awesome-icon(:icon='["fas", "check"]')
-              b-btn(@click='cancellist(data.index)' variant='danger')
-                font-awesome-icon(:icon='["fas", "undo"]')
-        h1 已完成
-        b-table-simple
-          thead
-            tr
-              th 名稱
-              th 操作
-          tbody
+            span(v-if='!data.item.edit').button
+              b-btn(@click='editlist(data.index)').border-0.bg-none.p-0.m-0
+                b-icon.colorPink(icon='pencil-fill')
+              b-btn(@click='dellist(data.index)').border-0.bg-none.p-0.m-0
+                b-icon.colorPink(icon='trash')
+            span(v-else).button
+              b-btn(@click='changelist(data.index)').border-0.bg-none.p-0.m-0
+                b-icon.colorPink(icon='check').icon
+              b-btn(@click='cancellist(data.index)').border-0.bg-none.p-0.m-0
+                b-icon.colorPink(icon='reply-fill' font-scale="1.5")
+      b-col(cols='6').p-1
+        h3.list Done
+        b-table-simple(small).list
             tr(v-for='(item, idx) in finished' :key='idx')
-              td {{ item }}
-              td
-                b-btn(@click='delfinish(idx)' variant='danger')
-                  font-awesome-icon(:icon='["fas", "trash"]')
+              td.listTbody {{ item.name }}
+              td.listTbody
+                b-btn(@click='delfinish(idx)' variant='danger').border-0.bg-none.p-0
+                  b-icon.colorPink(icon='trash')
 </template>
 
 <script>
@@ -57,6 +62,12 @@ export default {
     }
   },
   computed: {
+    doneLength () {
+      return this.$store.state.finished.length + this.$store.state.list.length
+    },
+    toDoLength () {
+      return this.$store.state.list.length
+    },
     state () {
       if (this.newitem.length === 0) {
         return null

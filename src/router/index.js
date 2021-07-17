@@ -28,6 +28,14 @@ const routes = [
     meta: {
       title: '番茄鐘 | 清單'
     }
+  },
+  {
+    path: '/analystics',
+    name: 'Analystics',
+    component: () => import(/* webpackChunkName: "analystics" */ '../views/Analystics.vue'),
+    meta: {
+      title: '番茄鐘 | 分析'
+    }
   }
 ]
 

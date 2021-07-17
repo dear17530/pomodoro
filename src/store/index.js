@@ -9,7 +9,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    sound: 'alarm.mp3',
+    worksound: 'alarm.mp3',
+    breaksound: 'alarm.mp3',
     list: [],
     finished: [],
     current: '',
@@ -18,11 +19,21 @@ export default new Vuex.Store({
     // 0 = 停止
     // 1 = 倒數中
     // 2 = 暫停
-    status: 0
+    status: 0,
+    // 0 = 清單頁面
+    // 1 = 設定頁面
+    // 2 = 分析頁面
+    page: 0
   },
   mutations: {
-    selectSound (state, data) {
-      state.sound = data
+    changePage (state, data) {
+      state.page = data
+    },
+    selectworksound (state, data) {
+      state.worksound = data
+    },
+    selectbreaksound (state, data) {
+      state.breaksound = data
     },
     addList (state, data) {
       state.list.push({
@@ -60,7 +71,11 @@ export default new Vuex.Store({
     },
     addFinish (state) {
       if (!state.isBreak) {
-        state.finished.push(state.current)
+        const month = new Date().getMonth() + 1
+        const day = new Date().getDate()
+        const hour = new Date().getHours()
+
+        state.finished.push({ name: state.current, date: month + '/' + day, time: hour })
       }
       state.current = ''
       if (state.list.length > 0) {
@@ -75,6 +90,15 @@ export default new Vuex.Store({
   getters: {
     list (state) {
       return state.list
+    },
+    dayDone (state) {
+      const month = new Date().getMonth() + 1
+      const day = new Date().getDate()
+      const now = month + '/' + day
+      const filterFinished = state.finished.filter(function (item) {
+        return item.date === now
+      })
+      return filterFinished
     }
   },
   actions: {
